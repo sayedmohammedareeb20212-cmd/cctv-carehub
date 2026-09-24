@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from flask import Flask, render_template
 from database import db
 
@@ -17,10 +18,14 @@ def create_app():
         'ms-enterprises-2026-secret-key'
     )
 
+    # ==================== SESSION CONFIG ====================
+    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
+    app.config['SESSION_COOKIE_HTTPONLY'] = True
+    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+    app.config['SESSION_COOKIE_SECURE'] = False
+
     # ==================== DATABASE ====================
     database_url = os.environ.get('DATABASE_URL', 'sqlite:///cctv.db')
-
-    # Render gives 'postgres://' but SQLAlchemy needs 'postgresql://'
     if database_url.startswith('postgres://'):
         database_url = database_url.replace('postgres://', 'postgresql://', 1)
 
@@ -28,7 +33,6 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # ==================== TWILIO CONFIG ====================
-    # ⚠️ Set these as Environment Variables on Render
     app.config['TWILIO_ACCOUNT_SID'] = os.environ.get('TWILIO_SID', '')
     app.config['TWILIO_AUTH_TOKEN'] = os.environ.get('TWILIO_TOKEN', '')
     app.config['TWILIO_WHATSAPP_FROM'] = os.environ.get('TWILIO_WHATSAPP_FROM', '')

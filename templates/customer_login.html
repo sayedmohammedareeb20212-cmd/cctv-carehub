@@ -3,30 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Login · CCTV CareHub</title>
+    <title>Customer Login · MS Enterprises</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Arial, sans-serif;
-        }
-
-        html, body {
-            height: 100%;
-            overflow: hidden;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
+        html, body { height: 100%; overflow-y: auto; }
 
         body {
             background: #050a15;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 30px 20px;
             position: relative;
+            min-height: 100vh;
         }
 
-        /* ---------- ANIMATED GRID BACKGROUND ---------- */
+        /* Animated grid background */
         .grid-bg {
             position: fixed;
             inset: 0;
@@ -45,7 +39,7 @@
             100% { background-position: 50px 50px; }
         }
 
-        /* ---------- GLOWING ORBS ---------- */
+        /* Glowing orbs */
         .orb {
             position: fixed;
             border-radius: 50%;
@@ -56,29 +50,23 @@
         }
 
         .orb-1 {
-            width: 500px;
-            height: 500px;
+            width: 500px; height: 500px;
             background: radial-gradient(circle, #00bcd4, transparent 70%);
-            top: -200px;
-            left: -150px;
+            top: -200px; left: -150px;
             animation: orbFloat 15s ease-in-out infinite;
         }
 
         .orb-2 {
-            width: 450px;
-            height: 450px;
+            width: 450px; height: 450px;
             background: radial-gradient(circle, #6366f1, transparent 70%);
-            bottom: -180px;
-            right: -150px;
+            bottom: -180px; right: -150px;
             animation: orbFloat 18s ease-in-out infinite reverse;
         }
 
         .orb-3 {
-            width: 350px;
-            height: 350px;
+            width: 350px; height: 350px;
             background: radial-gradient(circle, #ec4899, transparent 70%);
-            top: 40%;
-            left: 10%;
+            top: 40%; left: 10%;
             animation: orbFloat 22s ease-in-out infinite;
             opacity: 0.35;
         }
@@ -88,7 +76,7 @@
             50%      { transform: translate(60px, -40px) scale(1.15); }
         }
 
-        /* ---------- BACK LINK ---------- */
+        /* Back link */
         .back-link {
             position: fixed;
             top: 26px;
@@ -96,7 +84,7 @@
             z-index: 100;
             color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
-            font-size: 16px;               /* was 14px */
+            font-size: 16px;
             font-weight: 600;
             display: flex;
             align-items: center;
@@ -116,12 +104,12 @@
             transform: translateX(-3px);
         }
 
-        /* ---------- MAIN CARD (WITH ROTATING RING) ---------- */
+        /* Card wrapper with rotating ring */
         .card-wrap {
             position: relative;
             z-index: 10;
             width: 100%;
-            max-width: 520px;              /* slightly wider for bigger text */
+            max-width: 520px;
             animation: cardIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -135,28 +123,20 @@
             position: absolute;
             inset: -3px;
             border-radius: 30px;
-            background: conic-gradient(
-                from 0deg,
-                #00bcd4,
-                #6366f1,
-                #ec4899,
-                #00bcd4
-            );
+            background: conic-gradient(from 0deg, #00bcd4, #6366f1, #ec4899, #00bcd4);
             z-index: -1;
             animation: spin 6s linear infinite;
             opacity: 0.7;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         .card {
             background: rgba(10, 22, 40, 0.92);
             backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
             border-radius: 28px;
-            padding: 50px 45px;            /* was 45px 40px */
+            padding: 44px 42px;
             border: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5);
             position: relative;
@@ -166,33 +146,27 @@
         .card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             height: 1px;
             background: linear-gradient(90deg, transparent, rgba(0, 188, 212, 0.8), transparent);
         }
 
-        /* ---------- HEADER ---------- */
-        .header {
-            text-align: center;
-            margin-bottom: 38px;
-        }
+        /* Header */
+        .header { text-align: center; margin-bottom: 30px; }
 
         .logo {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            font-size: 26px;               /* was 22px */
-            font-weight: 700;
+            gap: 8px;
+            font-size: 24px;
+            font-weight: 800;
             color: white;
-            margin-bottom: 26px;
+            margin-bottom: 22px;
         }
 
         .logo-dot {
-            width: 12px;                   /* was 10px */
-            height: 12px;
+            width: 10px; height: 10px;
             background: #00bcd4;
             border-radius: 50%;
             box-shadow: 0 0 12px #00bcd4, 0 0 24px rgba(0, 188, 212, 0.5);
@@ -204,31 +178,31 @@
             50%      { opacity: 0.6; transform: scale(0.85); }
         }
 
-        .logo span { color: #00bcd4; }
+        .logo .brand-main { color: white; }
+        .logo .brand-accent { color: #00bcd4; }
 
         .header h1 {
             color: white;
-            font-size: 36px;               /* was 30px */
-            font-weight: 700;
+            font-size: 32px;
+            font-weight: 800;
             letter-spacing: -0.5px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .header p {
             color: rgba(255, 255, 255, 0.55);
-            font-size: 17px;               /* was 14px */
+            font-size: 15px;
         }
 
-        /* ---------- FLASH MESSAGES ---------- */
+        /* Flash messages */
         .flash {
-            padding: 14px 18px;
+            padding: 12px 16px;
             border-radius: 12px;
-            font-size: 15px;               /* was 13px */
-            margin-bottom: 22px;
+            font-size: 14px;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 10px;
-            backdrop-filter: blur(10px);
         }
 
         .flash.error {
@@ -243,27 +217,27 @@
             border: 1px solid rgba(34, 197, 94, 0.3);
         }
 
-        /* ---------- INPUT FIELDS ---------- */
+        /* Fields */
         .field {
             position: relative;
-            margin-bottom: 22px;
+            margin-bottom: 18px;
         }
 
         .field input {
             width: 100%;
-            padding: 20px 52px 20px 22px;  /* bigger tap target */
+            padding: 16px 48px 16px 20px;
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 14px;
             color: white;
-            font-size: 17px;               /* was 15px */
+            font-size: 15px;
             outline: none;
             transition: all 0.3s ease;
+            font-family: inherit;
         }
 
         .field input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 17px;
+            color: rgba(255, 255, 255, 0.35);
         }
 
         .field input:hover {
@@ -274,36 +248,32 @@
         .field input:focus {
             background: rgba(0, 188, 212, 0.06);
             border-color: #00bcd4;
-            box-shadow:
-                0 0 0 4px rgba(0, 188, 212, 0.12),
-                0 0 24px rgba(0, 188, 212, 0.25);
+            box-shadow: 0 0 0 4px rgba(0, 188, 212, 0.12), 0 0 24px rgba(0, 188, 212, 0.25);
         }
 
         .field .icon {
             position: absolute;
-            right: 20px;
+            right: 18px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 20px;               /* was 17px */
+            font-size: 18px;
             color: rgba(255, 255, 255, 0.3);
-            transition: color 0.2s;
             pointer-events: none;
+            transition: color 0.2s;
         }
 
-        .field input:focus ~ .icon {
-            color: #00bcd4;
-        }
+        .field input:focus ~ .icon { color: #00bcd4; }
 
         /* Password toggle */
         .toggle-pass {
             position: absolute;
-            right: 16px;
+            right: 14px;
             top: 50%;
             transform: translateY(-50%);
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 20px;               /* was 17px */
+            font-size: 18px;
             color: rgba(255, 255, 255, 0.4);
             padding: 6px;
             border-radius: 8px;
@@ -315,17 +285,17 @@
             background: rgba(0, 188, 212, 0.1);
         }
 
-        /* ---------- BUTTON ---------- */
+        /* Submit button */
         .submit-btn {
             width: 100%;
-            padding: 18px;                 /* was 16px */
+            padding: 16px;
             background: linear-gradient(135deg, #00bcd4, #0097a7);
             color: white;
             border: none;
             border-radius: 14px;
-            font-size: 18px;               /* was 16px */
+            font-size: 16px;
             font-weight: 700;
-            letter-spacing: 0.4px;
+            letter-spacing: 0.3px;
             cursor: pointer;
             position: relative;
             overflow: hidden;
@@ -337,27 +307,22 @@
         .submit-btn::before {
             content: '';
             position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
+            top: 50%; left: 50%;
+            width: 0; height: 0;
             background: rgba(255, 255, 255, 0.25);
             border-radius: 50%;
             transform: translate(-50%, -50%);
             transition: width 0.6s ease, height 0.6s ease;
         }
 
-        .submit-btn:hover::before {
-            width: 500px;
-            height: 500px;
-        }
+        .submit-btn:hover::before { width: 500px; height: 500px; }
 
         .submit-btn span {
             position: relative;
             z-index: 1;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .submit-btn:hover {
@@ -365,16 +330,12 @@
             box-shadow: 0 20px 36px -12px rgba(0, 188, 212, 0.9);
         }
 
-        .submit-btn:active {
-            transform: translateY(0);
-        }
-
-        /* ---------- FOOTER ---------- */
+        /* Footer links */
         .footer {
-            margin-top: 30px;
+            margin-top: 22px;
             text-align: center;
-            font-size: 16px;               /* was 14px */
-            color: rgba(255, 255, 255, 0.55);
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.5);
         }
 
         .footer a {
@@ -382,7 +343,6 @@
             text-decoration: none;
             font-weight: 700;
             margin-left: 4px;
-            transition: color 0.2s;
         }
 
         .footer a:hover {
@@ -390,84 +350,93 @@
             text-shadow: 0 0 12px rgba(0, 188, 212, 0.6);
         }
 
-        /* Divider */
+        /* Recover links row */
+        .recover-links {
+            margin-top: 22px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .recover-links a {
+            color: #4dd0e1;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 10px;
+            background: rgba(0, 188, 212, 0.08);
+            border: 1px solid rgba(0, 188, 212, 0.2);
+            transition: all 0.25s;
+        }
+
+        .recover-links a:hover {
+            background: rgba(0, 188, 212, 0.18);
+            border-color: rgba(0, 188, 212, 0.5);
+            color: #00bcd4;
+            transform: translateY(-2px);
+        }
+
         .divider {
             display: flex;
             align-items: center;
             gap: 14px;
-            margin: 28px 0 22px;
-            color: rgba(255, 255, 255, 0.3);
-            font-size: 13px;               /* was 11px */
+            margin: 22px 0 18px;
+            color: rgba(255, 255, 255, 0.25);
+            font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 1.5px;
         }
 
-        .divider::before,
-        .divider::after {
+        .divider::before, .divider::after {
             content: '';
             flex: 1;
             height: 1px;
             background: rgba(255, 255, 255, 0.1);
         }
 
-        /* ---------- RESPONSIVE ---------- */
+        /* Responsive */
         @media (max-width: 520px) {
-            body { padding: 16px; }
-
-            .card {
-                padding: 38px 26px;
-                border-radius: 22px;
-            }
-
-            .card-wrap::before {
-                border-radius: 24px;
-            }
-
-            .header h1 { font-size: 28px; }
-            .header p { font-size: 15px; }
-            .logo { font-size: 21px; margin-bottom: 22px; }
-
-            .back-link {
-                top: 14px;
-                left: 14px;
-                font-size: 14px;
-                padding: 8px 14px;
-            }
-
-            .field input {
-                padding: 17px 48px 17px 18px;
-                font-size: 15px;
-            }
-
-            .field input::placeholder {
-                font-size: 15px;
-            }
-
-            .submit-btn { font-size: 16px; padding: 16px; }
-            .footer { font-size: 14px; }
+            body { padding: 20px 16px; }
+            .card { padding: 34px 24px; border-radius: 22px; }
+            .card-wrap::before { border-radius: 24px; }
+            .header h1 { font-size: 26px; }
+            .header p { font-size: 14px; }
+            .logo { font-size: 20px; margin-bottom: 18px; }
+            .back-link { top: 14px; left: 14px; font-size: 14px; padding: 8px 14px; }
+            .field input { padding: 14px 44px 14px 16px; font-size: 14px; }
+            .submit-btn { font-size: 15px; padding: 15px; }
+            .recover-links { gap: 10px; }
+            .recover-links a { font-size: 12px; padding: 7px 12px; }
         }
     </style>
 </head>
 <body>
 
+    <!-- Animated grid -->
     <div class="grid-bg"></div>
 
+    <!-- Glowing orbs -->
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
     <div class="orb orb-3"></div>
 
+    <!-- Back link -->
     <a href="/" class="back-link">← Back</a>
 
+    <!-- Card -->
     <div class="card-wrap">
         <div class="card">
 
             <div class="header">
                 <div class="logo">
                     <span class="logo-dot"></span>
-                    CCTV <span>CareHub</span>
+                    <span class="brand-main">MS</span> <span class="brand-accent">Enterprises</span>
                 </div>
-                <h1>Welcome Back</h1>
-                <p>Sign in to access your dashboard</p>
+                <h1>Customer Login</h1>
+                <p>Sign in to manage your CCTV services</p>
             </div>
 
             {% with messages = get_flashed_messages(with_categories=true) %}
@@ -480,34 +449,14 @@
             {% endwith %}
 
             <form method="POST" action="/customer-login">
-
                 <div class="field">
-                    <input
-                        type="text"
-                        name="customerId"
-                        placeholder="Customer ID"
-                        required
-                        autocomplete="username"
-                        autofocus
-                    >
+                    <input type="text" name="customerId" placeholder="Customer ID" required autofocus>
                     <span class="icon">🆔</span>
                 </div>
 
                 <div class="field">
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        placeholder="Password"
-                        required
-                        autocomplete="current-password"
-                    >
-                    <button
-                        type="button"
-                        class="toggle-pass"
-                        onclick="togglePassword()"
-                        id="toggleBtn"
-                    >👁️</button>
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                    <button type="button" class="toggle-pass" onclick="togglePassword()" id="toggleBtn">👁️</button>
                 </div>
 
                 <button type="submit" class="submit-btn">
@@ -515,8 +464,16 @@
                 </button>
             </form>
 
+            <!-- Recover links -->
+            <div class="recover-links">
+                <a href="/forgot-id">🔑 Forgot Customer ID?</a>
+                <a href="/forgot-password">🔒 Forgot Password?</a>
+            </div>
+
+            <div class="divider"><span>or</span></div>
+
             <div class="footer">
-                Don't have an account?<a href="/customer-register">Create one</a>
+                Don't have an account?<a href="/customer-register">Register here</a>
             </div>
 
             <div class="divider"><span>or</span></div>

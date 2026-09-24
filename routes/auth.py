@@ -55,6 +55,7 @@ def customer_login():
             flash('Invalid Customer ID or Password', 'error')
             return redirect(url_for('auth.customer_login'))
 
+        session.permanent = True
         session['user_id'] = customer.id
         session['customer_id'] = customer.customer_id
         session['user_name'] = customer.name
@@ -78,6 +79,7 @@ def technician_login():
             flash('Invalid Technician ID or Password', 'error')
             return redirect(url_for('auth.technician_login'))
 
+        session.permanent = True
         session['user_id'] = tech.id
         session['technician_id'] = tech.technician_id
         session['user_name'] = tech.name
@@ -86,6 +88,58 @@ def technician_login():
         return redirect(url_for('complaints.technician_dashboard'))
 
     return render_template('technician_login.html')
+
+
+# ==================== FORGOT CUSTOMER ID ====================
+@auth_bp.route('/forgot-id', methods=['GET', 'POST'])
+def forgot_id():
+    customer = None
+    error = None
+
+    if request.method == 'POST':
+        mobile = request.form.get('mobile', '').strip()
+
+        if not mobile:
+            error = 'Please enter your registered mobile number'
+        else:
+            customer = Customer.query.filter_by(mobile=mobile).first()
+
+            if not customer:
+                error = f'No account found with mobile number: {mobile}'
+
+    return render_template('forgot_id.html', customer=customer, error=error)
+
+
+# ==================== FORGOT PASSWORD ====================
+@auth_bp.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    customer = None
+    error = None
+    success = None
+
+    if request.method == 'POST':
+        customer_id = request.form.get('customerId', '').strip().upper()
+        mobile = request.form.get('mobile', '').strip()
+        new_password = request.form.get('newPassword', '')
+
+        if not all([customer_id, mobile, new_password]):
+            error = 'All fields are required'
+        elif len(new_password) < 6:
+            error = 'Password must be at least 6 characters'
+        else:
+            customer = Customer.query.filter_by(customer_id=customer_id).first()
+
+            if not customer:
+                error = f'No account found with ID: {customer_id}'
+            elif customer.mobile != mobile:
+                error = 'Mobile number does not match our records'
+            else:
+                customer.password = generate_password_hash(new_password)
+                db.session.commit()
+                success = 'Password reset successfully! You can now login.'
+                customer = None
+
+    return render_template('forgot_password.html', error=error, success=success)
 
 
 # ==================== LOGOUT ====================
