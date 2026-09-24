@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Technicians · Admin · MS Enterprises</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
+        body { background: #f4f7fb; min-height: 100vh; }
+
+        /* HEADER */
+        .admin-header {
+            background: linear-gradient(135deg, #0b1f3a, #123c69);
+            color: white;
+            padding: 16px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .admin-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 800;
+        }
+        .admin-brand .ms { color: white; }
+        .admin-brand .ent { color: #00bcd4; }
+        .admin-brand .role {
+            background: rgba(139, 92, 246, 0.3);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            letter-spacing: 1px;
+            margin-left: 8px;
+        }
+
+        .admin-user { display: flex; align-items: center; gap: 14px; }
+        .admin-avatar {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+        }
+        .admin-user .name { font-weight: 700; font-size: 14px; }
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .logout-btn:hover { background: rgba(255, 255, 255, 0.25); }
+
+        /* NAV TABS */
+        .nav-tabs {
+            background: white;
+            padding: 0 5%;
+            display: flex;
+            gap: 4px;
+            border-bottom: 2px solid #e2e8f0;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            padding: 16px 24px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover { color: #8b5cf6; }
+        .nav-tab.active { color: #8b5cf6; border-bottom-color: #8b5cf6; }
+
+        /* CONTAINER */
+        .container { max-width: 1300px; margin: 30px auto; padding: 0 5%; }
+
+        /* FLASH */
+        .flash {
+            padding: 14px 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .flash.success { background: #f0fdf4; color: #166534; border-left: 4px solid #22c55e; }
+        .flash.error { background: #fef2f2; color: #991b1b; border-left: 4px solid #ef4444; }
+
+        /* LAYOUT */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 24px;
+            align-items: start;
+        }
+
+        /* SECTION */
+        .section {
+            background: white;
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #0b1f3a;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-sub {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 22px;
+        }
+
+        /* TECHNICIAN CARDS */
+        .techs-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .tech-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 18px;
+            background: #f8fafc;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.25s;
+            flex-wrap: wrap;
+        }
+
+        .tech-card:hover {
+            background: white;
+            box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.12);
+            border-color: #c4b5fd;
+        }
+
+        .tech-avatar {
+            width: 54px;
+            height: 54px;
+            background: linear-gradient(135deg, #0b1f3a, #123c69);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 22px;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .tech-avatar .dot {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .tech-avatar .dot.online { background: #22c55e; }
+        .tech-avatar .dot.offline { background: #ef4444; }
+
+        .tech-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .tech-info h4 {
+            font-size: 16px;
+            color: #0b1f3a;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tech-id-badge {
+            font-size: 11px;
+            font-weight: 700;
+            color: #7c3aed;
+            background: #f3e8ff;
+            padding: 2px 8px;
+            border-radius: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .tech-info p {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .tech-meta {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+
+        .tech-meta span {
+            font-size: 12px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .tech-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .toggle-btn, .remove-btn {
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .toggle-btn {
+            background: #e0e7ff;
+            color: #4338ca;
+        }
+        .toggle-btn:hover { background: #c7d2fe; }
+
+        .toggle-btn.offline {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .toggle-btn.offline:hover { background: #fecaca; }
+
+        .remove-btn {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+        .remove-btn:hover {
+            background: #fee2e2;
+            transform: scale(1.05);
+        }
+
+        /* ADD FORM */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            background: #f8fafc;
+            outline: none;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: #8b5cf6;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
+        }
+
+        /* PASSWORD FIELD WITH TOGGLE */
+        .password-field {
+            position: relative;
+        }
+
+        .password-field input {
+            width: 100%;
+            padding: 12px 48px 12px 14px;    /* extra right padding for button */
+        }
+
+        .toggle-pass {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: #64748b;
+            padding: 6px 10px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            line-height: 1;
+            user-select: none;
+        }
+
+        .toggle-pass:hover {
+            background: #f3e8ff;
+            color: #7c3aed;
+        }
+
+        .toggle-pass:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s;
+            box-shadow: 0 10px 22px -8px rgba(139, 92, 246, 0.5);
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 28px -10px rgba(139, 92, 246, 0.7);
+        }
+
+        /* EMPTY */
+        .empty-state {
+            padding: 50px 20px;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        .empty-state .icon { font-size: 56px; margin-bottom: 14px; opacity: 0.5; }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .two-col { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .admin-header { padding: 14px 4%; }
+            .admin-brand { font-size: 17px; }
+            .admin-user .name { display: none; }
+            .container { padding: 0 4%; margin: 20px auto; }
+            .section { padding: 20px; }
+            .tech-card { flex-direction: column; align-items: stretch; text-align: center; }
+            .tech-avatar { margin: 0 auto; }
+            .tech-actions { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="admin-header">
+        <div class="admin-brand">
+            <span class="ms">MS</span> <span class="ent">Enterprises</span>
+            <span class="role">ADMIN</span>
+        </div>
+        <div class="admin-user">
+            <div class="admin-avatar">{{ user_name[0] }}</div>
+            <div class="name">{{ user_name }}</div>
+            <a href="/admin/logout" class="logout-btn">Logout</a>
+        </div>
+    </div>
+
+    <!-- NAV TABS -->
+    <div class="nav-tabs">
+        <a href="/admin/dashboard" class="nav-tab">📊 Dashboard</a>
+        <a href="/admin/complaints" class="nav-tab">📨 Complaints</a>
+        <a href="/admin/customers" class="nav-tab">👥 Customers</a>
+        <a href="/admin/technicians" class="nav-tab active">🔧 Technicians</a>
+    </div>
+
+    <div class="container">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, msg in messages %}
+                <div class="flash {{ category }}">
+                    {% if category == 'error' %}⚠️{% else %}✅{% endif %}
+                    {{ msg }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        <div class="two-col">
+
+            <!-- LEFT: TECHNICIAN LIST -->
+            <div class="section">
+                <div class="section-title">
+                    🔧 Technicians
+                    <span style="font-size: 14px; background: #f3e8ff; color: #7c3aed; padding: 4px 12px; border-radius: 20px; font-weight: 700;">
+                        {{ technicians|length }}
+                    </span>
+                </div>
+                <p class="section-sub">Manage your team. Click on the toggle to change availability.</p>
+
+                {% if technicians %}
+                    <div class="techs-list">
+                        {% for t in technicians %}
+                            <div class="tech-card">
+                                <div class="tech-avatar">
+                                    {{ t.name[0] }}
+                                    <span class="dot {{ 'online' if t.is_available else 'offline' }}"></span>
+                                </div>
+
+                                <div class="tech-info">
+                                    <h4>
+                                        {{ t.name }}
+                                        <span class="tech-id-badge">{{ t.technician_id }}</span>
+                                    </h4>
+
+                                    <p>{{ t.specialization }}</p>
+
+                                    <div class="tech-meta">
+                                        <span>📞 {{ t.mobile }}</span>
+                                        <span>⭐ {{ t.rating }}</span>
+                                        <span>🔧 {{ job_counts.get(t.technician_id, 0) }} jobs</span>
+                                        <span>📅 {{ t.experience }} yrs</span>
+                                    </div>
+                                </div>
+
+                                <div class="tech-actions">
+                                    <form method="POST" action="/admin/technician/{{ t.id }}/toggle" style="display: inline;">
+                                        <button type="submit" class="toggle-btn {{ 'offline' if t.is_available else '' }}">
+                                            {{ 'Set Offline' if t.is_available else 'Set Online' }}
+                                        </button>
+                                    </form>
+
+                                    <form method="POST" action="/admin/technician/{{ t.id }}/delete" style="display: inline;" onsubmit="return confirm('Remove {{ t.name }}?');">
+                                        <button type="submit" class="remove-btn">🗑️</button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <div class="icon">🔧</div>
+                        <p>No technicians yet</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- RIGHT: ADD FORM -->
+            <div class="section">
+                <div class="section-title">➕ Add New Technician</div>
+                <p class="section-sub">Create an account. Share credentials with the technician.</p>
+
+                <form method="POST" action="/admin/technicians">
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" name="name" placeholder="e.g., Ramesh Kumar" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Mobile Number *</label>
+                        <input type="text" name="mobile" placeholder="e.g., 9876543210" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Address *</label>
+                        <input type="email" name="email" placeholder="e.g., ramesh@msenterprises.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Specialization</label>
+                        <input type="text" name="specialization" placeholder="e.g., CCTV Installation">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Experience (years)</label>
+                        <input type="number" name="experience" placeholder="e.g., 5" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Service Area</label>
+                        <input type="text" name="service_area" placeholder="e.g., Mangalore, Kinnikambla">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password *</label>
+                        <div class="password-field">
+                            <input type="password" name="password" id="techPassword" placeholder="Set a password" required minlength="6">
+                            <button type="button" class="toggle-pass" onclick="toggleTechPassword()" id="techToggleBtn" title="Show password">
+                                👁️
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="add-btn">Create Technician</button>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SCRIPT — Password Show/Hide Toggle -->
+    <script>
+        function toggleTechPassword() {
+            const input = document.getElementById('techPassword');
+            const btn = document.getElementById('techToggleBtn');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.textContent = '🙈';
+                btn.title = 'Hide password';
+            } else {
+                input.type = 'password';
+                btn.textContent = '👁️';
+                btn.title = 'Show password';
+            }
+        }
+    </script>
+
+</body>
+</html>

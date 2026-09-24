@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technician Login · MS Enterprises</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
+        html, body { height: 100%; overflow-y: auto; }
+
+        body {
+            background: #050a15;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Animated grid background */
+        .grid-bg {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(99, 102, 241, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.08) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 0;
+            animation: gridMove 20s linear infinite;
+            mask-image: radial-gradient(circle at center, black 30%, transparent 75%);
+            -webkit-mask-image: radial-gradient(circle at center, black 30%, transparent 75%);
+        }
+
+        @keyframes gridMove {
+            0%   { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        /* Glowing orbs — different colors for technician */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .orb-1 {
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, #6366f1, transparent 70%);
+            top: -200px; left: -150px;
+            animation: orbFloat 15s ease-in-out infinite;
+        }
+
+        .orb-2 {
+            width: 450px; height: 450px;
+            background: radial-gradient(circle, #00bcd4, transparent 70%);
+            bottom: -180px; right: -150px;
+            animation: orbFloat 18s ease-in-out infinite reverse;
+        }
+
+        .orb-3 {
+            width: 350px; height: 350px;
+            background: radial-gradient(circle, #8b5cf6, transparent 70%);
+            top: 40%; left: 10%;
+            animation: orbFloat 22s ease-in-out infinite;
+            opacity: 0.35;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50%      { transform: translate(60px, -40px) scale(1.15); }
+        }
+
+        /* Back link */
+        .back-link {
+            position: fixed;
+            top: 26px;
+            left: 26px;
+            z-index: 100;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 18px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.25s ease;
+        }
+
+        .back-link:hover {
+            background: rgba(99, 102, 241, 0.15);
+            border-color: rgba(99, 102, 241, 0.4);
+            color: #a5b4fc;
+            transform: translateX(-3px);
+        }
+
+        /* Main card */
+        .card-wrap {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 500px;
+            animation: cardIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(50px) scale(0.95); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Rotating ring — purple/indigo theme for technician */
+        .card-wrap::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 30px;
+            background: conic-gradient(
+                from 0deg,
+                #6366f1,
+                #8b5cf6,
+                #00bcd4,
+                #6366f1
+            );
+            z-index: -1;
+            animation: spin 6s linear infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .card {
+            background: rgba(10, 22, 40, 0.92);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 28px;
+            padding: 44px 42px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.8), transparent);
+        }
+
+        /* Header */
+        .header { text-align: center; margin-bottom: 30px; }
+
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 16px;
+            background: rgba(99, 102, 241, 0.15);
+            color: #a5b4fc;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            border-radius: 20px;
+            border: 1px solid rgba(99, 102, 241, 0.4);
+            margin-bottom: 20px;
+        }
+
+        .role-badge .dot {
+            width: 8px;
+            height: 8px;
+            background: #a5b4fc;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #a5b4fc;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%      { opacity: 0.6; transform: scale(0.85); }
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 24px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 22px;
+        }
+
+        .logo-dot {
+            width: 10px; height: 10px;
+            background: #6366f1;
+            border-radius: 50%;
+            box-shadow: 0 0 12px #6366f1, 0 0 24px rgba(99, 102, 241, 0.5);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .logo .brand-main { color: white; }
+        .logo .brand-accent { color: #00bcd4; }
+
+        .header h1 {
+            color: white;
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 15px;
+        }
+
+        /* Flash */
+        .flash {
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .flash.error {
+            background: rgba(239, 68, 68, 0.12);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .flash.success {
+            background: rgba(34, 197, 94, 0.12);
+            color: #86efac;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        /* Fields */
+        .field {
+            position: relative;
+            margin-bottom: 18px;
+        }
+
+        .field input {
+            width: 100%;
+            padding: 16px 48px 16px 20px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            color: white;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .field input::placeholder {
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        .field input:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .field input:focus {
+            background: rgba(99, 102, 241, 0.06);
+            border-color: #6366f1;
+            box-shadow:
+                0 0 0 4px rgba(99, 102, 241, 0.12),
+                0 0 24px rgba(99, 102, 241, 0.25);
+        }
+
+        .field .icon {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.3);
+            pointer-events: none;
+            transition: color 0.2s;
+        }
+
+        .field input:focus ~ .icon {
+            color: #a5b4fc;
+        }
+
+        /* Password toggle */
+        .toggle-pass {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.4);
+            padding: 6px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .toggle-pass:hover {
+            color: #a5b4fc;
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        /* Submit button — indigo theme */
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 12px 28px -10px rgba(99, 102, 241, 0.6);
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 0; height: 0;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .submit-btn:hover::before {
+            width: 500px;
+            height: 500px;
+        }
+
+        .submit-btn span {
+            position: relative;
+            z-index: 1;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 36px -12px rgba(99, 102, 241, 0.9);
+        }
+
+        /* Info note */
+        .info-note {
+            margin-top: 24px;
+            padding: 14px 18px;
+            background: rgba(99, 102, 241, 0.08);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 12px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.65);
+            text-align: center;
+            line-height: 1.55;
+        }
+
+        .info-note strong {
+            color: #a5b4fc;
+            font-weight: 700;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 22px;
+            text-align: center;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .footer a {
+            color: #00bcd4;
+            text-decoration: none;
+            font-weight: 700;
+            margin-left: 4px;
+        }
+
+        .footer a:hover {
+            color: #4dd0e1;
+            text-shadow: 0 0 12px rgba(0, 188, 212, 0.6);
+        }
+
+        /* Responsive */
+        @media (max-width: 520px) {
+            body { padding: 20px 16px; }
+
+            .card {
+                padding: 34px 24px;
+                border-radius: 22px;
+            }
+
+            .card-wrap::before { border-radius: 24px; }
+
+            .header h1 { font-size: 26px; }
+            .header p { font-size: 14px; }
+            .logo { font-size: 20px; margin-bottom: 18px; }
+
+            .back-link {
+                top: 14px;
+                left: 14px;
+                font-size: 14px;
+                padding: 8px 14px;
+            }
+
+            .field input {
+                padding: 14px 44px 14px 16px;
+                font-size: 14px;
+            }
+
+            .submit-btn { font-size: 15px; padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Animated grid -->
+    <div class="grid-bg"></div>
+
+    <!-- Glowing orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <!-- Back link -->
+    <a href="/" class="back-link">← Back</a>
+
+    <!-- Card -->
+    <div class="card-wrap">
+        <div class="card">
+
+            <div class="header">
+                <div class="role-badge">
+                    <span class="dot"></span>
+                    Technician Portal
+                </div>
+                <div class="logo">
+                    <span class="logo-dot"></span>
+                    <span class="brand-main">MS</span> <span class="brand-accent">Enterprises</span>
+                </div>
+                <h1>Technician Login</h1>
+                <p>Sign in to view and manage your service requests</p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, msg in messages %}
+                    <div class="flash {{ category }}">
+                        {% if category == 'error' %}⚠️{% else %}✅{% endif %}
+                        <span>{{ msg }}</span>
+                    </div>
+                {% endfor %}
+            {% endwith %}
+
+            <form method="POST" action="/technician-login">
+
+                <div class="field">
+                    <input type="text" name="technicianId" placeholder="Technician ID" required autofocus>
+                    <span class="icon">🆔</span>
+                </div>
+
+                <div class="field">
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                    <button type="button" class="toggle-pass" onclick="togglePassword()" id="toggleBtn">👁️</button>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <span>Sign In →</span>
+                </button>
+            </form>
+
+            <div class="info-note">
+                🔒 <strong>Credentials provided by company.</strong><br>
+                Contact MS Enterprises admin for your Technician ID and password.
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const input = document.getElementById('password');
+            const btn = document.getElementById('toggleBtn');
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                btn.textContent = '👁️';
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Customers · Admin · MS Enterprises</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
+        body { background: #f4f7fb; min-height: 100vh; }
+
+        /* HEADER */
+        .admin-header {
+            background: linear-gradient(135deg, #0b1f3a, #123c69);
+            color: white;
+            padding: 16px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .admin-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 800;
+        }
+        .admin-brand .ms { color: white; }
+        .admin-brand .ent { color: #00bcd4; }
+        .admin-brand .role {
+            background: rgba(139, 92, 246, 0.3);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            letter-spacing: 1px;
+            margin-left: 8px;
+        }
+
+        .admin-user { display: flex; align-items: center; gap: 14px; }
+        .admin-avatar {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+        }
+        .admin-user .name { font-weight: 700; font-size: 14px; }
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .logout-btn:hover { background: rgba(255, 255, 255, 0.25); }
+
+        /* NAV TABS */
+        .nav-tabs {
+            background: white;
+            padding: 0 5%;
+            display: flex;
+            gap: 4px;
+            border-bottom: 2px solid #e2e8f0;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            padding: 16px 24px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover { color: #8b5cf6; }
+        .nav-tab.active { color: #8b5cf6; border-bottom-color: #8b5cf6; }
+
+        /* CONTAINER */
+        .container { max-width: 1300px; margin: 30px auto; padding: 0 5%; }
+
+        /* FLASH */
+        .flash {
+            padding: 14px 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .flash.success { background: #f0fdf4; color: #166534; border-left: 4px solid #22c55e; }
+        .flash.error { background: #fef2f2; color: #991b1b; border-left: 4px solid #ef4444; }
+
+        /* SEARCH BAR */
+        .search-bar {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .search-bar input {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            background: #f8fafc;
+            outline: none;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .search-bar input:focus {
+            border-color: #8b5cf6;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
+        }
+
+        .search-btn {
+            padding: 12px 26px;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 8px 18px -6px rgba(139, 92, 246, 0.5);
+        }
+        .search-btn:hover { transform: translateY(-2px); }
+
+        .clear-btn {
+            padding: 12px 20px;
+            background: #f1f5f9;
+            color: #475569;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .clear-btn:hover { background: #e2e8f0; }
+
+        /* STATS */
+        .results-count {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 16px;
+            padding: 0 4px;
+        }
+        .results-count strong { color: #0b1f3a; }
+
+        /* CUSTOMER CARDS GRID */
+        .customers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .customer-card {
+            background: white;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            transition: all 0.25s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .customer-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+        }
+
+        .customer-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #8b5cf6, #6366f1);
+        }
+
+        .customer-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 18px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .customer-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .customer-name-block { flex: 1; min-width: 0; }
+
+        .customer-name-block h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0b1f3a;
+            margin-bottom: 3px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .customer-id-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            background: #f3e8ff;
+            color: #7c3aed;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .customer-details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        .detail-row .icon {
+            width: 28px;
+            height: 28px;
+            background: #f8fafc;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .detail-row .value {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .customer-stats {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .mini-stat {
+            flex: 1;
+            background: #f8fafc;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .mini-stat .num {
+            font-size: 20px;
+            font-weight: 800;
+            color: #8b5cf6;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .mini-stat .lbl {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .customer-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-call {
+            flex: 1;
+            padding: 10px;
+            background: #0b1f3a;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .action-call:hover { background: #00bcd4; }
+
+        .action-delete {
+            padding: 10px 14px;
+            background: #fef2f2;
+            color: #dc2626;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .action-delete:hover {
+            background: #fee2e2;
+            transform: scale(1.05);
+        }
+
+        /* EMPTY */
+        .empty-state {
+            background: white;
+            border-radius: 20px;
+            padding: 80px 20px;
+            text-align: center;
+            color: #94a3b8;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .empty-state .icon { font-size: 64px; margin-bottom: 16px; opacity: 0.5; }
+        .empty-state h3 { font-size: 20px; color: #0b1f3a; margin-bottom: 8px; }
+        .empty-state p { font-size: 15px; }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .admin-header { padding: 14px 4%; }
+            .admin-brand { font-size: 17px; }
+            .admin-user .name { display: none; }
+            .container { padding: 0 4%; margin: 20px auto; }
+            .search-bar { padding: 16px; }
+            .search-bar input { min-width: 100%; }
+            .customers-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="admin-header">
+        <div class="admin-brand">
+            <span class="ms">MS</span> <span class="ent">Enterprises</span>
+            <span class="role">ADMIN</span>
+        </div>
+        <div class="admin-user">
+            <div class="admin-avatar">{{ user_name[0] }}</div>
+            <div class="name">{{ user_name }}</div>
+            <a href="/admin/logout" class="logout-btn">Logout</a>
+        </div>
+    </div>
+
+    <!-- NAV TABS -->
+    <div class="nav-tabs">
+        <a href="/admin/dashboard" class="nav-tab">📊 Dashboard</a>
+        <a href="/admin/complaints" class="nav-tab">📨 Complaints</a>
+        <a href="/admin/customers" class="nav-tab active">👥 Customers</a>
+        <a href="/admin/technicians" class="nav-tab">🔧 Technicians</a>
+    </div>
+
+    <div class="container">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, msg in messages %}
+                <div class="flash {{ category }}">
+                    {% if category == 'error' %}⚠️{% else %}✅{% endif %}
+                    {{ msg }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        <!-- SEARCH -->
+        <form method="GET" action="/admin/customers" class="search-bar">
+            <input type="text" name="search" placeholder="Search by ID, name, mobile, or email..." value="{{ search_query or '' }}">
+            <button type="submit" class="search-btn">🔍 Search</button>
+            <a href="/admin/customers" class="clear-btn">Clear</a>
+        </form>
+
+        <!-- RESULTS -->
+        <div class="results-count">
+            Showing <strong>{{ customers|length }}</strong> customer{{ 's' if customers|length != 1 else '' }}
+        </div>
+
+        <!-- GRID -->
+        {% if customers %}
+            <div class="customers-grid">
+                {% for c in customers %}
+                    <div class="customer-card">
+                        <div class="customer-header">
+                            <div class="customer-avatar">{{ c.name[0] }}</div>
+                            <div class="customer-name-block">
+                                <h3>{{ c.name }}</h3>
+                                <span class="customer-id-badge">{{ c.customer_id }}</span>
+                            </div>
+                        </div>
+
+                        <div class="customer-details">
+                            <div class="detail-row">
+                                <span class="icon">📞</span>
+                                <span class="value">{{ c.mobile }}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="icon">✉️</span>
+                                <span class="value">{{ c.email }}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="icon">📍</span>
+                                <span class="value">{{ c.location }}</span>
+                            </div>
+                        </div>
+
+                        <div class="customer-stats">
+                            <div class="mini-stat">
+                                <div class="num">{{ complaint_counts.get(c.customer_id, 0) }}</div>
+                                <div class="lbl">Complaints</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="num">{{ c.created_at.strftime('%d %b') }}</div>
+                                <div class="lbl">Joined</div>
+                            </div>
+                        </div>
+
+                        <div class="customer-actions">
+                            <a href="tel:{{ c.mobile }}" class="action-call">📞 Call</a>
+                            <form method="POST" action="/admin/customer/{{ c.id }}/delete" style="display: inline;" onsubmit="return confirm('Delete this customer?');">
+                                <button type="submit" class="action-delete">🗑️</button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="icon">👥</div>
+                <h3>No customers yet</h3>
+                <p>Customers will appear here once they register</p>
+            </div>
+        {% endif %}
+
+    </div>
+
+</body>
+</html>

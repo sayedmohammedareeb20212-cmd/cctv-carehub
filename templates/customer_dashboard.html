@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard · CCTV CareHub</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
+        body { background: #f4f7fb; min-height: 100vh; }
+
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, #0b1f3a, #123c69);
+            color: white; padding: 18px 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        .header-brand {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 22px; font-weight: 800; letter-spacing: -0.5px;
+        }
+        .header-brand .cctv { color: white; }
+        .header-brand .carehub { color: #00bcd4; }
+        .user-box { display: flex; align-items: center; gap: 14px; }
+        .avatar {
+            width: 46px; height: 46px;
+            background: linear-gradient(135deg, #00bcd4, #0097a7);
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; font-weight: 800; font-size: 18px;
+            box-shadow: 0 6px 14px rgba(0, 188, 212, 0.4);
+        }
+        .user-box .name { font-weight: 700; font-size: 15px; }
+        .user-box .id { font-size: 13px; color: rgba(255, 255, 255, 0.7); }
+        .logout {
+            background: rgba(255, 255, 255, 0.15); color: white; border: none;
+            padding: 10px 20px; border-radius: 10px; cursor: pointer;
+            text-decoration: none; font-size: 14px; font-weight: 600;
+            transition: all 0.2s;
+        }
+        .logout:hover { background: rgba(255, 255, 255, 0.25); transform: translateY(-2px); }
+
+        /* CONTAINER */
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 5%; }
+
+        /* FLASH */
+        .flash {
+            padding: 14px 20px; border-radius: 12px; margin-bottom: 24px;
+            font-size: 15px; display: flex; align-items: center; gap: 10px;
+            animation: slideIn 0.4s ease;
+        }
+        .flash.success { background: #f0fdf4; color: #166534; border-left: 4px solid #22c55e; }
+        .flash.error { background: #fef2f2; color: #991b1b; border-left: 4px solid #ef4444; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* TABS */
+        .tabs {
+            display: flex; gap: 8px; margin-bottom: 28px; flex-wrap: wrap;
+            background: white; padding: 8px; border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+        .tab-btn {
+            padding: 14px 24px; background: transparent; border: none;
+            border-radius: 10px; font-size: 15px; font-weight: 600;
+            color: #475569; cursor: pointer; transition: all 0.2s;
+            flex: 1; min-width: 150px;
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, #0b1f3a, #123c69);
+            color: white; box-shadow: 0 8px 18px -8px rgba(11, 31, 58, 0.5);
+        }
+        .tab-btn:hover:not(.active) { background: #f1f5f9; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* SECTION */
+        .section {
+            background: white; padding: 32px; border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+        .section h2 { color: #0b1f3a; font-size: 24px; margin-bottom: 8px; font-weight: 800; }
+        .section-sub { color: #64748b; font-size: 14px; margin-bottom: 24px; }
+
+        /* FORM */
+        label {
+            display: block; font-size: 13px; font-weight: 600; color: #334155;
+            margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        input, select, textarea {
+            width: 100%; padding: 14px 16px; border: 2px solid #e2e8f0;
+            border-radius: 12px; font-size: 15px; margin-bottom: 18px;
+            background: #f8fafc; outline: none; font-family: inherit; transition: all 0.2s;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #00bcd4; background: white;
+            box-shadow: 0 0 0 4px rgba(0, 188, 212, 0.12);
+        }
+        textarea { min-height: 100px; resize: vertical; }
+        .submit-btn {
+            background: linear-gradient(135deg, #00bcd4, #0097a7);
+            color: white; border: none; padding: 15px 32px;
+            border-radius: 12px; font-size: 15px; font-weight: 700;
+            cursor: pointer; transition: all 0.25s;
+            box-shadow: 0 10px 22px -8px rgba(0, 188, 212, 0.6);
+        }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 16px 28px -10px rgba(0, 188, 212, 0.8); }
+
+        /* COMPLAINTS */
+        .complaint-list { display: flex; flex-direction: column; gap: 14px; }
+        .complaint-item {
+            background: #f8fafc; padding: 20px; border-radius: 14px;
+            border-left: 4px solid #00bcd4; transition: transform 0.2s;
+        }
+        .complaint-item:hover { transform: translateX(4px); }
+        .complaint-item.high { border-left-color: #ef4444; }
+        .complaint-item.medium { border-left-color: #f59e0b; }
+        .complaint-item.low { border-left-color: #22c55e; }
+        .complaint-item.resolved { background: #f0fdf4; border-left-color: #22c55e; opacity: 0.9; }
+
+        .complaint-head {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 10px; flex-wrap: wrap; gap: 8px;
+        }
+        .complaint-head h4 { color: #0b1f3a; font-size: 17px; }
+
+        .tag {
+            padding: 4px 12px; border-radius: 20px; font-size: 11px;
+            font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+            display: inline-block; margin-left: 6px;
+        }
+        .tag.pending { background: #fefcbf; color: #744210; }
+        .tag.in-progress { background: #bee3f8; color: #2c5282; }
+        .tag.resolved { background: #c6f6d5; color: #22543d; }
+        .tag.high { background: #fed7d7; color: #742a2a; }
+        .tag.medium { background: #feebc8; color: #7b341e; }
+        .tag.low { background: #c6f6d5; color: #22543d; }
+
+        .complaint-item p { color: #475569; font-size: 14px; margin-bottom: 8px; line-height: 1.55; }
+        .complaint-item small { color: #94a3b8; font-size: 12px; }
+
+        /* PRODUCTS */
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+        .product-card {
+            background: #f8fafc; border-radius: 16px; padding: 26px;
+            border: 1px solid #e2e8f0; transition: all 0.25s;
+        }
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.15);
+            border-color: #00bcd4; background: white;
+        }
+        .product-icon {
+            font-size: 42px; margin-bottom: 14px; display: inline-flex;
+            width: 70px; height: 70px;
+            background: linear-gradient(135deg, #e6f7fb, #cff5fb);
+            border-radius: 16px; align-items: center; justify-content: center;
+        }
+        .product-card h3 { color: #0b1f3a; font-size: 18px; margin-bottom: 8px; font-weight: 700; }
+        .product-card p { color: #64748b; font-size: 14px; line-height: 1.55; margin-bottom: 14px; }
+        .product-price { font-size: 20px; font-weight: 800; color: #00bcd4; }
+        .product-price small { font-size: 13px; color: #64748b; font-weight: 500; }
+
+        /* TECHNICIANS */
+        .tech-list { display: flex; flex-direction: column; gap: 14px; }
+        .tech-card {
+            display: flex; align-items: center; gap: 16px;
+            background: #f8fafc; padding: 18px 22px; border-radius: 14px;
+            transition: all 0.2s; border: 1px solid #e2e8f0;
+        }
+        .tech-card:hover { background: white; box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.15); }
+        .tech-avatar {
+            width: 54px; height: 54px;
+            background: linear-gradient(135deg, #0b1f3a, #123c69);
+            color: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 20px; flex-shrink: 0;
+        }
+        .tech-info { flex: 1; }
+        .tech-info h4 { color: #0b1f3a; font-size: 16px; margin-bottom: 4px; }
+        .tech-info p { color: #64748b; font-size: 13px; margin-bottom: 6px; }
+        .status { display: inline-block; padding: 3px 12px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+        .status.available { background: #c6f6d5; color: #22543d; }
+        .status.busy { background: #fed7d7; color: #742a2a; }
+        .call-btn {
+            background: #0b1f3a; color: white; padding: 11px 20px;
+            border-radius: 10px; text-decoration: none; font-size: 13px;
+            font-weight: 700; transition: all 0.2s;
+            white-space: nowrap; display: inline-flex;
+            align-items: center; gap: 6px;
+        }
+        .call-btn:hover { background: #00bcd4; transform: translateY(-2px); }
+
+        /* CUSTOMER CARE */
+        .care-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .care-card {
+            background: linear-gradient(135deg, #0b1f3a, #123c69);
+            color: white; padding: 32px; border-radius: 20px;
+            transition: all 0.25s; text-decoration: none; display: block;
+        }
+        .care-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px -20px rgba(11, 31, 58, 0.6); }
+        .care-icon { font-size: 42px; margin-bottom: 16px; }
+        .care-card h3 { font-size: 20px; margin-bottom: 8px; font-weight: 700; }
+        .care-card p { color: rgba(255, 255, 255, 0.75); font-size: 14px; line-height: 1.55; margin-bottom: 16px; }
+        .care-value { font-size: 20px; font-weight: 800; color: #00bcd4; letter-spacing: 0.5px; }
+
+        /* EMPTY */
+        .empty { text-align: center; padding: 50px 20px; color: #94a3b8; }
+        .empty .icon { font-size: 52px; margin-bottom: 14px; opacity: 0.5; }
+        .empty p { font-size: 15px; }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .header { flex-direction: column; text-align: center; }
+            .container { padding: 0 4%; margin: 20px auto; }
+            .section { padding: 24px 20px; }
+            .tab-btn { min-width: unset; flex: 1 1 45%; font-size: 13px; padding: 12px; }
+            .tech-card { flex-wrap: wrap; }
+            .call-btn { width: 100%; justify-content: center; }
+        }
+        @media (max-width: 480px) {
+            .header-brand { font-size: 18px; }
+            .tab-btn { font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-brand">
+            <span class="cctv">CCTV</span> <span class="carehub">CareHub</span>
+        </div>
+        <div class="user-box">
+            <div class="avatar">{{ user_name[0] }}</div>
+            <div>
+                <div class="name">{{ user_name }}</div>
+                <div class="id">{{ customer_id }}</div>
+            </div>
+            <a href="/logout" class="logout">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, msg in messages %}
+                <div class="flash {{ category }}">
+                    {% if category == 'error' %}⚠️{% else %}✅{% endif %}
+                    {{ msg }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="complaint">📋 Raise Complaint</button>
+            <button class="tab-btn" data-tab="my-complaints">📨 My Complaints</button>
+            <button class="tab-btn" data-tab="products">🛒 Products</button>
+            <button class="tab-btn" data-tab="technicians">🔧 Technicians</button>
+            <button class="tab-btn" data-tab="care">📞 Customer Care</button>
+        </div>
+
+        <!-- Tab 1: Raise Complaint -->
+        <div class="tab-content active" id="tab-complaint">
+            <div class="section">
+                <h2>Raise a CCTV Complaint</h2>
+                <p class="section-sub">Tell us what's wrong and we'll send a technician.</p>
+
+                <form method="POST" action="/complaint/submit">
+                    <label>Complaint Type</label>
+                    <select name="complaintType" required>
+                        <option value="">-- Select issue type --</option>
+                        <option>CCTV Not Working</option>
+                        <option>Camera Not Recording</option>
+                        <option>Poor Video Quality</option>
+                        <option>DVR / NVR Issue</option>
+                        <option>Installation Request</option>
+                        <option>Other</option>
+                    </select>
+
+                    <label>Describe the Issue</label>
+                    <textarea name="description" placeholder="Tell us more about the problem..." required></textarea>
+
+                    <label>Your Mobile</label>
+                    <input type="text" name="mobile" placeholder="Mobile number">
+
+                    <label>Your Location</label>
+                    <input type="text" name="location" placeholder="City / Area">
+
+                    <button type="submit" class="submit-btn">Submit Complaint</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tab 2: My Complaints -->
+        <div class="tab-content" id="tab-my-complaints">
+            <div class="section">
+                <h2>My Complaints</h2>
+                <p class="section-sub">Track the status of all your complaints.</p>
+
+                {% if complaints %}
+                    <div class="complaint-list">
+                        {% for c in complaints %}
+                            <div class="complaint-item {{ c.priority }} {% if c.status == 'resolved' %}resolved{% endif %}">
+                                <div class="complaint-head">
+                                    <h4>{{ c.complaint_type }}</h4>
+                                    <div>
+                                        <span class="tag {{ c.priority }}">{{ c.priority }}</span>
+                                        <span class="tag {{ c.status }}">{{ c.status }}</span>
+                                    </div>
+                                </div>
+                                <p>{{ c.description }}</p>
+                                <small>
+                                    🆔 {{ c.complaint_id }} ·
+                                    🕐 {{ c.created_at.strftime('%d %b %Y, %I:%M %p') }}
+                                    {% if c.technician_id %} · 🔧 {{ c.technician_id }}{% endif %}
+                                </small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty">
+                        <div class="icon">📭</div>
+                        <p>You haven't filed any complaints yet.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Tab 3: Products -->
+        <div class="tab-content" id="tab-products">
+            <div class="section">
+                <h2>CCTV Products & Accessories</h2>
+                <p class="section-sub">Browse our range of CCTV cameras, DVRs, and accessories.</p>
+
+                <div class="products-grid">
+                    <div class="product-card">
+                        <div class="product-icon">📹</div>
+                        <h3>HD CCTV Camera</h3>
+                        <p>1080p full HD indoor/outdoor camera with night vision and motion detection.</p>
+                        <div class="product-price">₹1,899 <small>+ GST</small></div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-icon">🎥</div>
+                        <h3>4K Ultra HD Camera</h3>
+                        <p>High-resolution 4K camera with wide-angle lens and smart AI detection.</p>
+                        <div class="product-price">₹3,499 <small>+ GST</small></div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-icon">💾</div>
+                        <h3>DVR Recorder (8 Ch)</h3>
+                        <p>8-channel DVR with 1TB storage, mobile app support and easy setup.</p>
+                        <div class="product-price">₹4,299 <small>+ GST</small></div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-icon">📡</div>
+                        <h3>WiFi Router</h3>
+                        <p>Dual-band router for smooth CCTV streaming and remote access.</p>
+                        <div class="product-price">₹1,299 <small>+ GST</small></div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-icon">🔌</div>
+                        <h3>Power Supply Adapter</h3>
+                        <p>12V 5A power adapter for multiple CCTV cameras.</p>
+                        <div class="product-price">₹599 <small>+ GST</small></div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-icon">🧵</div>
+                        <h3>CCTV Cable (90m)</h3>
+                        <p>Premium coaxial cable with power wire for reliable installation.</p>
+                        <div class="product-price">₹1,099 <small>+ GST</small></div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-icon">🔒</div>
+                        <h3>PTZ Camera</h3>
+                        <p>Pan-tilt-zoom camera with 360° coverage and auto-tracking.</p>
+                        <div class="product-price">₹6,999 <small>+ GST</small></div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-icon">🌐</div>
+                        <h3>NVR (16 Ch)</h3>
+                        <p>16-channel network video recorder for IP camera setups.</p>
+                        <div class="product-price">₹8,499 <small>+ GST</small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Technicians -->
+        <div class="tab-content" id="tab-technicians">
+            <div class="section">
+                <h2>Nearby Technicians</h2>
+                <p class="section-sub">Available technicians ready to help you.</p>
+
+                {% if technicians %}
+                    <div class="tech-list">
+                        {% for t in technicians %}
+                            <div class="tech-card">
+                                <div class="tech-avatar">{{ t.name[0] }}</div>
+                                <div class="tech-info">
+                                    <h4>{{ t.name }}</h4>
+                                    <p>⭐ {{ t.rating }} · {{ t.experience }} yrs · {{ t.service_area or 'Available' }}</p>
+                                    <span class="status {{ 'available' if t.is_available else 'busy' }}">
+                                        {{ 'Available Now' if t.is_available else 'On a Job' }}
+                                    </span>
+                                </div>
+                                <a href="tel:{{ t.mobile }}" class="call-btn">📞 Call</a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty">
+                        <div class="icon">🔧</div>
+                        <p>No technicians registered yet.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Tab 5: Customer Care -->
+        <div class="tab-content" id="tab-care">
+            <div class="section">
+                <h2>Customer Care</h2>
+                <p class="section-sub">We're here 24/7 to help you. Reach out anytime.</p>
+
+                <div class="care-grid">
+                    <a href="tel:+919876543210" class="care-card">
+                        <div class="care-icon">📞</div>
+                        <h3>Helpline</h3>
+                        <p>24/7 phone support for urgent CCTV issues.</p>
+                        <div class="care-value">+91 98765 43210</div>
+                    </a>
+                    <a href="mailto:support@cctvcarehub.com" class="care-card">
+                        <div class="care-icon">✉️</div>
+                        <h3>Email Support</h3>
+                        <p>Send us your queries and we'll respond within 24 hours.</p>
+                        <div class="care-value">support@cctvcarehub.com</div>
+                    </a>
+                    <a href="https://wa.me/918722782100" target="_blank" class="care-card">
+                        <div class="care-icon">💬</div>
+                        <h3>WhatsApp</h3>
+                        <p>Quick chat support on WhatsApp.</p>
+                        <div class="care-value">Chat Now →</div>
+                    </a>
+                    <a href="#" class="care-card">
+                        <div class="care-icon">📍</div>
+                        <h3>Visit Office</h3>
+                        <p>CCTV CareHub, Mumbai, Maharashtra, India</p>
+                        <div class="care-value">Get Directions →</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.querySelectorAll('.tab-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('tab-' + btn.getAttribute('data-tab')).classList.add('active');
+            });
+        });
+    </script>
+
+</body>
+</html>

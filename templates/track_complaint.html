@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Complaint · MS Enterprises</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
+        html { scroll-behavior: smooth; }
+        body { background: #f4f7fb; min-height: 100vh; }
+
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, #0b1f3a, #123c69);
+            color: white;
+            padding: 18px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .header-brand .brand-main { color: white; }
+        .header-brand .brand-accent { color: #00bcd4; }
+
+        .back-link {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.2s;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-3px);
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 780px;
+            margin: 40px auto;
+            padding: 0 5%;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title h1 {
+            color: #0b1f3a;
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .page-title p {
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        /* SEARCH BOX */
+        .search-box {
+            background: white;
+            padding: 28px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            margin-bottom: 24px;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .search-form input {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            font-size: 16px;
+            background: #f8fafc;
+            outline: none;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .search-form input:focus {
+            border-color: #00bcd4;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0, 188, 212, 0.12);
+        }
+
+        .search-form button {
+            padding: 15px 32px;
+            background: linear-gradient(135deg, #00bcd4, #0097a7);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s;
+            box-shadow: 0 10px 22px -8px rgba(0, 188, 212, 0.6);
+        }
+
+        .search-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 28px -10px rgba(0, 188, 212, 0.8);
+        }
+
+        /* ERROR */
+        .error-box {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+            padding: 18px 22px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            color: #991b1b;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* COMPLAINT CARD */
+        .complaint-card {
+            background: white;
+            border-radius: 24px;
+            padding: 36px;
+            box-shadow: 0 12px 40px -20px rgba(0, 0, 0, 0.15);
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .complaint-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 26px;
+            padding-bottom: 22px;
+            border-bottom: 1px solid #f1f5f9;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .complaint-id {
+            font-size: 13px;
+            font-weight: 600;
+            color: #94a3b8;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .complaint-title {
+            color: #0b1f3a;
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .complaint-desc {
+            color: #64748b;
+            font-size: 15px;
+            line-height: 1.65;
+            max-width: 480px;
+        }
+
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        .status-badge.pending { background: #fefcbf; color: #744210; }
+        .status-badge.in-progress { background: #bee3f8; color: #2c5282; }
+        .status-badge.resolved { background: #c6f6d5; color: #22543d; }
+
+        /* TIMELINE */
+        .timeline {
+            position: relative;
+            padding: 20px 0 10px;
+            margin-bottom: 30px;
+        }
+
+        .timeline-track {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .timeline-track::before {
+            content: '';
+            position: absolute;
+            top: 22px;
+            left: 10%;
+            right: 10%;
+            height: 3px;
+            background: #e2e8f0;
+            z-index: 0;
+        }
+
+        .timeline-track .progress-line {
+            position: absolute;
+            top: 22px;
+            left: 10%;
+            height: 3px;
+            background: linear-gradient(90deg, #00bcd4, #0097a7);
+            z-index: 1;
+            transition: width 0.6s ease;
+        }
+
+        .timeline-step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+            min-width: 80px;
+        }
+
+        .timeline-dot {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            border: 3px solid white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 20px;
+            color: #94a3b8;
+            transition: all 0.3s;
+        }
+
+        .timeline-step.done .timeline-dot {
+            background: linear-gradient(135deg, #00bcd4, #0097a7);
+            color: white;
+            box-shadow: 0 6px 16px rgba(0, 188, 212, 0.5);
+        }
+
+        .timeline-step.current .timeline-dot {
+            background: linear-gradient(135deg, #00bcd4, #0097a7);
+            color: white;
+            box-shadow: 0 0 0 6px rgba(0, 188, 212, 0.2), 0 6px 16px rgba(0, 188, 212, 0.5);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 6px rgba(0, 188, 212, 0.2), 0 6px 16px rgba(0, 188, 212, 0.5); }
+            50%      { box-shadow: 0 0 0 12px rgba(0, 188, 212, 0.1), 0 6px 16px rgba(0, 188, 212, 0.5); }
+        }
+
+        .timeline-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #94a3b8;
+        }
+
+        .timeline-step.done .timeline-label,
+        .timeline-step.current .timeline-label {
+            color: #0b1f3a;
+        }
+
+        /* DETAILS */
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .detail-item {
+            background: #f8fafc;
+            padding: 16px 20px;
+            border-radius: 14px;
+            border-left: 4px solid #00bcd4;
+        }
+
+        .detail-item .label {
+            font-size: 12px;
+            color: #94a3b8;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .detail-item .value {
+            font-size: 15px;
+            color: #0b1f3a;
+            font-weight: 700;
+        }
+
+        /* ACTIONS */
+        .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            flex: 1;
+            min-width: 180px;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .action-btn.call {
+            background: #0b1f3a;
+            color: white;
+        }
+
+        .action-btn.call:hover {
+            background: #00bcd4;
+            transform: translateY(-2px);
+        }
+
+        .action-btn.whatsapp {
+            background: #25d366;
+            color: white;
+        }
+
+        .action-btn.whatsapp:hover {
+            background: #1da851;
+            transform: translateY(-2px);
+        }
+
+        .action-btn.email {
+            background: white;
+            color: #0b1f3a;
+            border: 2px solid #e2e8f0;
+        }
+
+        .action-btn.email:hover {
+            border-color: #00bcd4;
+            color: #00bcd4;
+            transform: translateY(-2px);
+        }
+
+        /* INFO BOX */
+        .info-box {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            padding: 20px 24px;
+            border-radius: 16px;
+            margin-top: 24px;
+            font-size: 14px;
+            color: #075985;
+            line-height: 1.65;
+        }
+
+        .info-box strong {
+            color: #0c4a6e;
+            display: block;
+            margin-bottom: 6px;
+            font-size: 15px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            .complaint-card { padding: 24px 20px; border-radius: 18px; }
+            .complaint-title { font-size: 20px; }
+            .details-grid { grid-template-columns: 1fr; }
+
+            .timeline-track::before,
+            .timeline-track .progress-line {
+                left: 15%;
+                right: 15%;
+            }
+
+            .timeline-dot { width: 38px; height: 38px; font-size: 16px; }
+            .timeline-label { font-size: 11px; }
+
+            .search-form button { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-brand">
+            <span class="brand-main">MS</span> <span class="brand-accent">Enterprises</span>
+        </div>
+        <a href="/" class="back-link">← Back to Home</a>
+    </div>
+
+    <div class="container">
+
+        <div class="page-title">
+            <h1>🔍 Track Your Complaint</h1>
+            <p>Enter your Complaint ID to see real-time status updates</p>
+        </div>
+
+        <!-- Search Box -->
+        <div class="search-box">
+            <form method="POST" action="/track" class="search-form">
+                <input
+                    type="text"
+                    name="complaintId"
+                    placeholder="Enter Complaint ID (e.g., CMP1001)"
+                    value="{{ complaint_id or '' }}"
+                    required
+                    autofocus
+                >
+                <button type="submit">Track →</button>
+            </form>
+        </div>
+
+        <!-- Error -->
+        {% if error %}
+            <div class="error-box">
+                ⚠️ {{ error }}
+            </div>
+        {% endif %}
+
+        <!-- Complaint Details -->
+        {% if complaint %}
+            <div class="complaint-card">
+
+                <!-- Header -->
+                <div class="complaint-header">
+                    <div>
+                        <div class="complaint-id">{{ complaint.complaint_id }}</div>
+                        <div class="complaint-title">{{ complaint.complaint_type }}</div>
+                        <div class="complaint-desc">{{ complaint.description }}</div>
+                    </div>
+                    <div class="status-badge {{ complaint.status }}">
+                        {{ complaint.status.replace('-', ' ') }}
+                    </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="timeline">
+                    <div class="timeline-track">
+
+                        {% if complaint.status == 'pending' %}
+                            {% set progress_width = '0%' %}
+                            {% set step1_class = 'current' %}
+                            {% set step2_class = '' %}
+                            {% set step3_class = '' %}
+                            {% set step4_class = '' %}
+                        {% elif complaint.status == 'in-progress' %}
+                            {% set progress_width = '33%' %}
+                            {% set step1_class = 'done' %}
+                            {% set step2_class = 'done' %}
+                            {% set step3_class = 'current' %}
+                            {% set step4_class = '' %}
+                        {% elif complaint.status == 'resolved' %}
+                            {% set progress_width = '66%' %}
+                            {% set step1_class = 'done' %}
+                            {% set step2_class = 'done' %}
+                            {% set step3_class = 'done' %}
+                            {% set step4_class = 'current' %}
+                        {% else %}
+                            {% set progress_width = '0%' %}
+                            {% set step1_class = 'current' %}
+                            {% set step2_class = '' %}
+                            {% set step3_class = '' %}
+                            {% set step4_class = '' %}
+                        {% endif %}
+
+                        <div class="progress-line" style="width: {{ progress_width }};"></div>
+
+                        <div class="timeline-step {{ step1_class }}">
+                            <div class="timeline-dot">📝</div>
+                            <div class="timeline-label">Submitted</div>
+                        </div>
+
+                        <div class="timeline-step {{ step2_class }}">
+                            <div class="timeline-dot">✅</div>
+                            <div class="timeline-label">Accepted</div>
+                        </div>
+
+                        <div class="timeline-step {{ step3_class }}">
+                            <div class="timeline-dot">🔧</div>
+                            <div class="timeline-label">In Progress</div>
+                        </div>
+
+                        <div class="timeline-step {{ step4_class }}">
+                            <div class="timeline-dot">🎉</div>
+                            <div class="timeline-label">Resolved</div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Details -->
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <div class="label">Customer</div>
+                        <div class="value">{{ complaint.customer_name }}</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="label">Location</div>
+                        <div class="value">{{ complaint.customer_location or 'N/A' }}</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="label">Priority</div>
+                        <div class="value">{{ complaint.priority|upper }}</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="label">Submitted</div>
+                        <div class="value">{{ complaint.created_at.strftime('%d %b %Y, %I:%M %p') }}</div>
+                    </div>
+
+                    {% if complaint.technician_id %}
+                    <div class="detail-item">
+                        <div class="label">Technician</div>
+                        <div class="value">{{ complaint.technician_id }}</div>
+                    </div>
+                    {% endif %}
+
+                    {% if complaint.resolved_at %}
+                    <div class="detail-item">
+                        <div class="label">Resolved At</div>
+                        <div class="value">{{ complaint.resolved_at.strftime('%d %b %Y, %I:%M %p') }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="actions">
+                    <a href="tel:+918722782100" class="action-btn call">
+                        📞 Call Support
+                    </a>
+                    <a href="https://wa.me/918722782100?text=Hi%2C%20I%20want%20to%20check%20status%20of%20complaint%20{{ complaint.complaint_id }}"
+                       target="_blank"
+                       class="action-btn whatsapp">
+                        💬 WhatsApp
+                    </a>
+                    <a href="mailto:m.s.enterprises2100@outlook.com?subject=Complaint%20{{ complaint.complaint_id }}"
+                       class="action-btn email">
+                        ✉️ Email Us
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- Info -->
+            <div class="info-box">
+                <strong>ℹ️ Need to make changes?</strong>
+                If you want to modify this complaint or raise a new one, please log in to your account.
+                <a href="/customer-login" style="color: #0097a7; font-weight: 700; text-decoration: none;">Log In →</a>
+            </div>
+        {% endif %}
+
+    </div>
+
+</body>
+</html>

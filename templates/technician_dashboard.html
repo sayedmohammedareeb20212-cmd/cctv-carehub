@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Technician Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #f4f7fb; }
+
+        .header {
+            background: linear-gradient(135deg, #0b1f3a, #123c69); color: white;
+            padding: 20px 5%; display: flex; justify-content: space-between;
+            align-items: center; flex-wrap: wrap; gap: 15px;
+        }
+        .logo { font-size: 22px; font-weight: bold; }
+        .logo span { color: #00bcd4; }
+        .user-box { display: flex; align-items: center; gap: 12px; }
+        .avatar {
+            width: 42px; height: 42px; background: #00bcd4; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 18px; position: relative;
+        }
+        .online-dot {
+            position: absolute; bottom: 2px; right: 2px; width: 11px; height: 11px;
+            background: #38a169; border: 2px solid white; border-radius: 50%;
+        }
+        .user-box .name { font-weight: bold; font-size: 14px; }
+        .user-box .id { font-size: 12px; color: #cbd5e1; }
+        .logout {
+            background: rgba(255,255,255,0.15); color: white; border: none;
+            padding: 9px 18px; border-radius: 8px; cursor: pointer;
+            text-decoration: none; font-size: 13px; font-weight: bold;
+        }
+        .logout:hover { background: rgba(255,255,255,0.25); }
+
+        .container { max-width: 1100px; margin: 30px auto; padding: 0 5%; }
+
+        .flash { padding: 12px 18px; border-radius: 10px; margin-bottom: 20px; font-size: 14px; }
+        .flash.success { background: #c6f6d5; color: #22543d; border-left: 4px solid #38a169; }
+        .flash.error { background: #fed7d7; color: #742a2a; border-left: 4px solid #e53e3e; }
+
+        /* Stats */
+        .stats {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px; margin-bottom: 25px;
+        }
+        .stat-card {
+            background: white; padding: 20px; border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex; align-items: center; gap: 14px;
+        }
+        .stat-icon {
+            width: 46px; height: 46px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; background: #e6f7fb;
+        }
+        .stat-value { font-size: 22px; font-weight: bold; color: #0b1f3a; }
+        .stat-label { font-size: 12px; color: #64748b; }
+
+        .section {
+            background: white; padding: 25px; border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .section h2 { color: #0b1f3a; font-size: 22px; margin-bottom: 20px; }
+
+        .complaint-item {
+            background: #f8fafc; padding: 18px; border-radius: 12px;
+            margin-bottom: 12px; border-left: 4px solid #00bcd4;
+        }
+        .complaint-item.high { border-left-color: #e53e3e; }
+        .complaint-item.medium { border-left-color: #ed8936; }
+        .complaint-item.low { border-left-color: #38a169; }
+        .complaint-item.resolved { background: #f0fff4; border-left-color: #38a169; opacity: 0.85; }
+
+        .complaint-head {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 8px; flex-wrap: wrap; gap: 8px;
+        }
+        .complaint-head h4 { color: #0b1f3a; font-size: 16px; }
+        .tag {
+            padding: 3px 10px; border-radius: 20px; font-size: 11px;
+            font-weight: bold; text-transform: uppercase;
+        }
+        .tag.pending { background: #fefcbf; color: #744210; }
+        .tag.in-progress { background: #bee3f8; color: #2c5282; }
+        .tag.resolved { background: #c6f6d5; color: #22543d; }
+        .tag.high { background: #fed7d7; color: #742a2a; }
+        .tag.medium { background: #feebc8; color: #7b341e; }
+        .tag.low { background: #c6f6d5; color: #22543d; }
+
+        .complaint-item p { color: #475569; font-size: 14px; margin-bottom: 8px; }
+        .complaint-item small { color: #94a3b8; font-size: 12px; display: block; margin-bottom: 10px; }
+
+        .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .actions form { display: inline; }
+        .btn {
+            padding: 9px 18px; border: none; border-radius: 8px;
+            font-size: 13px; font-weight: bold; cursor: pointer;
+            text-decoration: none; display: inline-block;
+        }
+        .btn-accept { background: #00bcd4; color: white; }
+        .btn-accept:hover { background: #0097a7; }
+        .btn-complete { background: #38a169; color: white; }
+        .btn-complete:hover { background: #2f855a; }
+        .btn-call { background: #0b1f3a; color: white; }
+        .btn-call:hover { background: #00bcd4; }
+
+        .empty { text-align: center; padding: 30px; color: #94a3b8; font-size: 14px; }
+
+        .availability {
+            background: white; padding: 20px; border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 12px; margin-bottom: 25px;
+        }
+        .availability .status-text { font-size: 15px; color: #334155; font-weight: 600; }
+        .toggle-btn {
+            padding: 11px 22px; border: 2px solid #00bcd4; background: transparent;
+            color: #0097a7; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 14px;
+        }
+        .toggle-btn:hover { background: #00bcd4; color: white; }
+        .toggle-btn.offline { border-color: #e53e3e; color: #e53e3e; }
+        .toggle-btn.offline:hover { background: #e53e3e; color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo">CCTV <span>CareHub</span> · Technician</div>
+        <div class="user-box">
+            <div class="avatar">
+                {{ user_name[0] }}
+                <span class="online-dot"></span>
+            </div>
+            <div>
+                <div class="name">{{ user_name }}</div>
+                <div class="id">{{ technician_id }}</div>
+            </div>
+            <a href="/logout" class="logout">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, msg in messages %}
+                <div class="flash {{ category }}">{{ msg }}</div>
+            {% endfor %}
+        {% endwith %}
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-icon">📋</div>
+                <div>
+                    <div class="stat-value">{{ stats.assigned }}</div>
+                    <div class="stat-label">Assigned Jobs</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#fffaf0;">⏳</div>
+                <div>
+                    <div class="stat-value">{{ stats.pending }}</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#f0fff4;">✅</div>
+                <div>
+                    <div class="stat-value">{{ stats.completed }}</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#faf5ff;">⭐</div>
+                <div>
+                    <div class="stat-value">{{ stats.rating }}</div>
+                    <div class="stat-label">Rating</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Availability Toggle -->
+        <div class="availability">
+            <div class="status-text">
+                Current Status:
+                {% if technician and technician.is_available %}
+                    🟢 Available
+                {% else %}
+                    🔴 Offline
+                {% endif %}
+            </div>
+            <form method="POST" action="/technician/toggle-availability" style="display:inline;">
+                <button type="submit" class="toggle-btn {% if technician and not technician.is_available %}offline{% endif %}">
+                    {% if technician and technician.is_available %}
+                        Set Offline
+                    {% else %}
+                        Set Available
+                    {% endif %}
+                </button>
+            </form>
+        </div>
+
+        <!-- Complaints -->
+        <div class="section">
+            <h2>📨 Complaints</h2>
+
+            {% if complaints %}
+                {% for c in complaints %}
+                    <div class="complaint-item {{ c.priority }} {% if c.status == 'resolved' %}resolved{% endif %}">
+                        <div class="complaint-head">
+                            <h4>{{ c.complaint_type }}</h4>
+                            <div>
+                                <span class="tag {{ c.priority }}">{{ c.priority }}</span>
+                                <span class="tag {{ c.status }}">{{ c.status }}</span>
+                            </div>
+                        </div>
+                        <p>{{ c.description }}</p>
+                        <small>
+                            👤 {{ c.customer_name }} ·
+                            📍 {{ c.customer_location }} ·
+                            🕐 {{ c.created_at.strftime('%d %b %Y, %I:%M %p') }}
+                            {% if c.customer_mobile %} · 📞 {{ c.customer_mobile }}{% endif %}
+                        </small>
+
+                        <div class="actions">
+                            {% if c.customer_mobile %}
+                                <a href="tel:{{ c.customer_mobile }}" class="btn btn-call">📞 Call</a>
+                            {% endif %}
+
+                            {% if c.status == 'pending' and not c.technician_id %}
+                                <form method="POST" action="/complaint/{{ c.id }}/accept">
+                                    <button type="submit" class="btn btn-accept">Accept Job</button>
+                                </form>
+                            {% elif c.status == 'in-progress' and c.technician_id == technician_id %}
+                                <form method="POST" action="/complaint/{{ c.id }}/complete">
+                                    <button type="submit" class="btn btn-complete">Mark Complete</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty">✅ No pending complaints right now. Great job!</div>
+            {% endif %}
+        </div>
+
+    </div>
+
+</body>
+</html>

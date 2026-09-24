@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Technician Registration</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body {
+            background: linear-gradient(135deg, #0b1f3a, #123c69);
+            min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;
+        }
+        .box {
+            background: white; padding: 40px; border-radius: 20px; width: 100%; max-width: 480px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3); border-top: 5px solid #00bcd4;
+        }
+        .badge {
+            display: block; width: fit-content; margin: 0 auto 15px; padding: 5px 14px;
+            background: #e6f7fb; color: #0097a7; font-size: 12px; font-weight: bold;
+            border-radius: 20px; text-transform: uppercase;
+        }
+        h2 { color: #0b1f3a; text-align: center; margin-bottom: 10px; }
+        .sub { color: #64748b; text-align: center; font-size: 14px; margin-bottom: 25px; }
+        .flash { padding: 12px; border-radius: 10px; margin-bottom: 15px; text-align: center; font-size: 13px; }
+        .flash.error { background: #fed7d7; color: #742a2a; }
+        .flash.success { background: #c6f6d5; color: #22543d; }
+        label { display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 5px; text-transform: uppercase; }
+        input {
+            width: 100%; padding: 13px; border: 2px solid #e2e8f0; border-radius: 10px;
+            font-size: 15px; margin-bottom: 16px; background: #f8fafc; outline: none;
+        }
+        input:focus { border-color: #00bcd4; background: white; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        button {
+            width: 100%; padding: 14px; background: #00bcd4; color: white; border: none;
+            border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 8px;
+        }
+        button:hover { background: #0097a7; }
+        .link { text-align: center; margin-top: 20px; font-size: 14px; color: #64748b; }
+        .link a { color: #00bcd4; text-decoration: none; font-weight: bold; }
+        @media (max-width: 500px) { .row { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <span class="badge">Technician Portal</span>
+        <h2>Technician Registration</h2>
+        <p class="sub">Join our team of certified CCTV technicians.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, msg in messages %}
+                <div class="flash {{ category }}">{{ msg }}</div>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="POST" action="/technician-register">
+            <label>Full Name</label>
+            <input type="text" name="name" placeholder="Enter your full name" required>
+
+            <div class="row">
+                <div>
+                    <label>Mobile</label>
+                    <input type="text" name="mobile" placeholder="Mobile number" required>
+                </div>
+                <div>
+                    <label>Experience (yrs)</label>
+                    <input type="number" name="experience" placeholder="e.g. 5" min="0">
+                </div>
+            </div>
+
+            <label>Email</label>
+            <input type="email" name="email" placeholder="Enter your email" required>
+
+            <label>Specialization</label>
+            <input type="text" name="specialization" placeholder="e.g. CCTV Installation & DVR Repair">
+
+            <label>Service Area</label>
+            <input type="text" name="serviceArea" placeholder="e.g. Andheri, Bandra, Powai">
+
+            <label>Password</label>
+            <input type="password" name="password" placeholder="Create a password" required>
+
+            <button type="submit">Register</button>
+        </form>
+
+        <div class="link">
+            Already have an account? <a href="/technician-login">Login here</a>
+        </div>
+    </div>
+</body>
+</html>

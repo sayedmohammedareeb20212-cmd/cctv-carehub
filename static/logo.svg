@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 100" width="500" height="100">
+  <defs>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#00bcd4"/>
+      <stop offset="100%" stop-color="#0097a7"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Shield -->
+  <path d="M40 15 L75 25 L75 55 Q75 80 40 92 Q5 80 5 55 L5 25 Z"
+        fill="#0b1f3a" stroke="#00bcd4" stroke-width="2.5"/>
+
+  <!-- Camera icon inside -->
+  <g transform="translate(22, 32)">
+    <rect x="0" y="2" width="36" height="26" rx="5" fill="#00bcd4"/>
+    <circle cx="18" cy="15" r="8" fill="#0b1f3a"/>
+    <circle cx="18" cy="15" r="4.5" fill="#00bcd4"/>
+    <circle cx="18" cy="15" r="2" fill="#0b1f3a"/>
+    <rect x="7" y="28" width="22" height="3" rx="1.5" fill="#00bcd4"/>
+  </g>
+
+  <!-- MS text -->
+  <text x="100" y="55" font-family="Segoe UI, Arial, sans-serif" font-size="42"
+        font-weight="800" fill="#0b1f3a" letter-spacing="-1.5">MS</text>
+
+  <!-- ENTERPRISE text -->
+  <text x="100" y="80" font-family="Segoe UI, Arial, sans-serif" font-size="13"
+        font-weight="700" fill="#00bcd4" letter-spacing="4">ENTERPRISE</text>
+
+  <!-- Divider -->
+  <line x1="102" y1="88" x2="290" y2="88" stroke="#cbd5e1" stroke-width="1.5"/>
+
+  <!-- Tagline -->
+  <text x="102" y="99" font-family="Segoe UI, Arial, sans-serif" font-size="8"
+        font-weight="500" fill="#64748b" letter-spacing="2">CCTV &amp; SECURITY SOLUTIONS</text>
+</svg>

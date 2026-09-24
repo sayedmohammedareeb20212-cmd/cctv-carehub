@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Complaints · Admin · MS Enterprises</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
+        body { background: #f4f7fb; min-height: 100vh; }
+
+        /* HEADER */
+        .admin-header {
+            background: linear-gradient(135deg, #0b1f3a, #123c69);
+            color: white;
+            padding: 16px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .admin-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .admin-brand .ms { color: white; }
+        .admin-brand .ent { color: #00bcd4; }
+        .admin-brand .role {
+            background: rgba(139, 92, 246, 0.3);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            letter-spacing: 1px;
+            margin-left: 8px;
+        }
+
+        .admin-user { display: flex; align-items: center; gap: 14px; }
+
+        .admin-avatar {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+        }
+
+        .admin-user .name { font-weight: 700; font-size: 14px; }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover { background: rgba(255, 255, 255, 0.25); }
+
+        /* NAV TABS */
+        .nav-tabs {
+            background: white;
+            padding: 0 5%;
+            display: flex;
+            gap: 4px;
+            border-bottom: 2px solid #e2e8f0;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            padding: 16px 24px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover { color: #8b5cf6; }
+
+        .nav-tab.active {
+            color: #8b5cf6;
+            border-bottom-color: #8b5cf6;
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 1300px;
+            margin: 30px auto;
+            padding: 0 5%;
+        }
+
+        /* FLASH */
+        .flash {
+            padding: 14px 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .flash.success { background: #f0fdf4; color: #166534; border-left: 4px solid #22c55e; }
+        .flash.error { background: #fef2f2; color: #991b1b; border-left: 4px solid #ef4444; }
+
+        /* FILTER BAR */
+        .filter-bar {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .filter-bar select,
+        .filter-bar input[type="text"] {
+            padding: 10px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            background: #f8fafc;
+            outline: none;
+            font-family: inherit;
+            transition: all 0.2s;
+            min-width: 140px;
+        }
+
+        .filter-bar input[type="text"] {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-bar select:focus,
+        .filter-bar input[type="text"]:focus {
+            border-color: #8b5cf6;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
+        }
+
+        .filter-btn {
+            padding: 10px 22px;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 8px 18px -6px rgba(139, 92, 246, 0.5);
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px -8px rgba(139, 92, 246, 0.7);
+        }
+
+        .clear-btn {
+            padding: 10px 18px;
+            background: #f1f5f9;
+            color: #475569;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .clear-btn:hover { background: #e2e8f0; }
+
+        /* RESULTS COUNT */
+        .results-count {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 16px;
+            padding: 0 4px;
+        }
+
+        .results-count strong { color: #0b1f3a; }
+
+        /* TABLE */
+        .table-wrap {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        th {
+            padding: 16px 20px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 18px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+            color: #334155;
+            vertical-align: middle;
+        }
+
+        tbody tr:hover { background: #fafbfc; }
+
+        tbody tr:last-child td { border-bottom: none; }
+
+        .complaint-id {
+            font-weight: 700;
+            color: #8b5cf6;
+            font-size: 13px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .complaint-type {
+            font-weight: 600;
+            color: #0b1f3a;
+            font-size: 14px;
+        }
+
+        .customer-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .customer-cell strong {
+            color: #0b1f3a;
+            font-size: 14px;
+        }
+
+        .customer-cell small {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin: 2px 2px 2px 0;
+        }
+
+        .badge.pending { background: #fefcbf; color: #744210; }
+        .badge.in-progress { background: #bee3f8; color: #2c5282; }
+        .badge.resolved { background: #c6f6d5; color: #22543d; }
+        .badge.high { background: #fed7d7; color: #742a2a; }
+        .badge.medium { background: #feebc8; color: #7b341e; }
+        .badge.low { background: #c6f6d5; color: #22543d; }
+
+        /* ASSIGN FORM */
+        .assign-form {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .assign-form select {
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 13px;
+            background: #f8fafc;
+            outline: none;
+            font-family: inherit;
+            min-width: 140px;
+            transition: all 0.2s;
+        }
+
+        .assign-form select:focus {
+            border-color: #8b5cf6;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
+        }
+
+        .assign-btn {
+            padding: 8px 14px;
+            background: #8b5cf6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .assign-btn:hover {
+            background: #7c3aed;
+            transform: translateY(-1px);
+        }
+
+        .delete-btn {
+            background: #fef2f2;
+            color: #dc2626;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: #fee2e2;
+            transform: scale(1.05);
+        }
+
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        .empty-state .icon {
+            font-size: 56px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 15px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .table-wrap { overflow-x: auto; }
+            table { min-width: 900px; }
+        }
+
+        @media (max-width: 768px) {
+            .admin-header { padding: 14px 4%; }
+            .admin-brand { font-size: 17px; }
+            .admin-user .name { display: none; }
+            .container { padding: 0 4%; margin: 20px auto; }
+            .filter-bar { padding: 16px; gap: 10px; }
+            .filter-bar select,
+            .filter-bar input[type="text"] { min-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="admin-header">
+        <div class="admin-brand">
+            <span class="ms">MS</span> <span class="ent">Enterprises</span>
+            <span class="role">ADMIN</span>
+        </div>
+        <div class="admin-user">
+            <div class="admin-avatar">{{ user_name[0] }}</div>
+            <div class="name">{{ user_name }}</div>
+            <a href="/admin/logout" class="logout-btn">Logout</a>
+        </div>
+    </div>
+
+    <!-- NAV TABS -->
+    <div class="nav-tabs">
+        <a href="/admin/dashboard" class="nav-tab">📊 Dashboard</a>
+        <a href="/admin/complaints" class="nav-tab active">📨 Complaints</a>
+        <a href="/admin/customers" class="nav-tab">👥 Customers</a>
+        <a href="/admin/technicians" class="nav-tab">🔧 Technicians</a>
+    </div>
+
+    <div class="container">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, msg in messages %}
+                <div class="flash {{ category }}">
+                    {% if category == 'error' %}⚠️{% else %}✅{% endif %}
+                    {{ msg }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        <!-- FILTERS -->
+        <form method="GET" action="/admin/complaints" class="filter-bar">
+            <select name="status">
+                <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Status</option>
+                <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+                <option value="in-progress" {% if status_filter == 'in-progress' %}selected{% endif %}>In Progress</option>
+                <option value="resolved" {% if status_filter == 'resolved' %}selected{% endif %}>Resolved</option>
+            </select>
+
+            <select name="priority">
+                <option value="all" {% if priority_filter == 'all' %}selected{% endif %}>All Priority</option>
+                <option value="high" {% if priority_filter == 'high' %}selected{% endif %}>High</option>
+                <option value="medium" {% if priority_filter == 'medium' %}selected{% endif %}>Medium</option>
+                <option value="low" {% if priority_filter == 'low' %}selected{% endif %}>Low</option>
+            </select>
+
+            <input type="text" name="search" placeholder="Search by ID, name, mobile, type..." value="{{ search_query or '' }}">
+
+            <button type="submit" class="filter-btn">🔍 Search</button>
+            <a href="/admin/complaints" class="clear-btn">Clear</a>
+        </form>
+
+        <!-- RESULTS COUNT -->
+        <div class="results-count">
+            Showing <strong>{{ complaints|length }}</strong> complaint{{ 's' if complaints|length != 1 else '' }}
+        </div>
+
+        <!-- TABLE -->
+        <div class="table-wrap">
+            {% if complaints %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Complaint</th>
+                            <th>Customer</th>
+                            <th>Status</th>
+                            <th>Priority</th>
+                            <th>Assigned To</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in complaints %}
+                            <tr>
+                                <td>
+                                    <span class="complaint-id">{{ c.complaint_id }}</span>
+                                    <div class="complaint-type">{{ c.complaint_type }}</div>
+                                    <small style="color: #94a3b8; font-size: 12px;">
+                                        {{ c.created_at.strftime('%d %b, %I:%M %p') }}
+                                    </small>
+                                </td>
+                                <td>
+                                    <div class="customer-cell">
+                                        <strong>{{ c.customer_name }}</strong>
+                                        <small>📞 {{ c.customer_mobile or 'N/A' }}</small>
+                                        <small>📍 {{ c.customer_location or 'N/A' }}</small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge {{ c.status }}">{{ c.status }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge {{ c.priority }}">{{ c.priority }}</span>
+                                </td>
+                                <td>
+                                    {% if c.technician_id %}
+                                        <span style="font-size: 13px; color: #334155; font-weight: 600;">{{ c.technician_id }}</span>
+                                    {% else %}
+                                        <span style="font-size: 12px; color: #94a3b8; font-style: italic;">Not assigned</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <form method="POST" action="/admin/complaint/{{ c.id }}/assign" class="assign-form" style="margin-bottom: 6px;">
+                                        <select name="technician_id">
+                                            <option value="">Assign to...</option>
+                                            {% for t in technicians %}
+                                                <option value="{{ t.technician_id }}" {% if c.technician_id == t.technician_id %}selected{% endif %}>
+                                                    {{ t.technician_id }} · {{ t.name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                        <button type="submit" class="assign-btn">Assign</button>
+                                    </form>
+
+                                    <form method="POST" action="/admin/complaint/{{ c.id }}/delete" style="display: inline;" onsubmit="return confirm('Delete this complaint?');">
+                                        <button type="submit" class="delete-btn">🗑️</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="empty-state">
+                    <div class="icon">📭</div>
+                    <p>No complaints found</p>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+
+</body>
+</html>
